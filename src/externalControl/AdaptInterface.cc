@@ -20,7 +20,7 @@
 
 Define_Module(AdaptInterface);
 
-#define DEBUG_ADAPT_INTERFACE 0
+#define DEBUG_ADAPT_INTERFACE 1
 
 using namespace std;
 

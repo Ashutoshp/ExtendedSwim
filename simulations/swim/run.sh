@@ -1,5 +1,5 @@
 #!/bin/bash
-MAINSIMDIR=../../src/
+MAINSIMDIR=../../src
 MAINSIMEXEC=swim
 
 if [ $# -lt 1 ]; then

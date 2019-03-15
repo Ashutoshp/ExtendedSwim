@@ -44,7 +44,7 @@ network SWIM
         double dimmerMargin = default(0.0);
         double responseTimeThreshold @unit(s) = default(1s);
         double maxServiceRate;
-        
+
     submodules:
         sink: Sink {
             @display("p=522,211");

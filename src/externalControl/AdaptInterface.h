@@ -15,7 +15,7 @@
 #ifndef __SWIM_ADAPTINTERFACE_H_
 #define __SWIM_ADAPTINTERFACE_H_
 
-#include "SocketRTScheduler.h"
+#include <SocketRTScheduler.h>
 #include <omnetpp.h>
 #include <string>
 #include <vector>
