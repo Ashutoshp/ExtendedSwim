@@ -17,40 +17,130 @@
 
 using namespace std;
 
-const int NUMBER_OF_DIMMER_LEVELS = 5;
+const int NUMBER_OF_DIMMER_LEVELS = 3;
 const double DIMMER_STEP = 1.0 / (NUMBER_OF_DIMMER_LEVELS - 1);
-const double RT_THRESHOLD = 0.75;
+const double RT_THRESHOLD = 1.00;
 const int PERIOD = 60;
 
+std::string getDivertTrafficCommand(int activeServersA, int activeServersB, int activeServersC) {
+    std::string cmd = "";
+
+    if (activeServersA && activeServersB && activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_50_25_25;
+    } else if (!activeServersA && activeServersB && activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_0_50_50;
+    } else if (activeServersA && !activeServersB && activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_50_0_50;
+    } else if (activeServersA && activeServersB && !activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_50_50_0;
+    } else if (!activeServersA && !activeServersB && activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_0_0_100;
+    } else if (!activeServersA && activeServersB && !activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_0_100_0;
+    } else if (activeServersA && !activeServersB && !activeServersC) {
+        cmd = SwimClient::cmdDivertTraffic_100_0_0;
+    }
+
+    return cmd;
+}
+
+void handleHighResponseTime(SwimClient& swim) {
+    int serversA = swim.getServers(SwimClient::A);
+    int serversB = swim.getServers(SwimClient::B);
+    int serversC = swim.getServers(SwimClient::C);
+    double dimmerFactor = swim.getDimmer();
+
+    int totalServers = serversA + serversB + serversC;
+
+    int activeServersA = swim.getActiveServers(SwimClient::A);
+    int activeServersB = swim.getActiveServers(SwimClient::B);
+    int activeServersC = swim.getActiveServers(SwimClient::C);
+
+    int totalActiveServers = activeServersA + activeServersB + activeServersC;
+    bool isServerBooting = (totalServers > totalActiveServers);
+    std::string divertTrafficCmd = getDivertTrafficCommand(activeServersA, activeServersB, activeServersC);
+    swim.divertTraffic(divertTrafficCmd);
+
+    if (!isServerBooting) {
+        if (serversC < swim.getMaxServers(SwimClient::C)) {
+            swim.addServer(SwimClient::C);
+        } else if (serversB < swim.getMaxServers(SwimClient::B)) {
+            swim.addServer(SwimClient::B);
+        } else if (serversA < swim.getMaxServers(SwimClient::A)) {
+            swim.addServer(SwimClient::A);
+        }
+    }
+
+    // Compare probability for a request having an optional content
+    // Less dimmer factor implies lesser request are served with optional content
+    // Therefore, if probability is greater than 0 then decrease it.
+    if (dimmerFactor > 0.0) {
+        swim.decreaseDimmer();
+    }
+}
+
+void handleLowResponseTime(SwimClient& swim) {
+    int serversA = swim.getServers(SwimClient::A);
+    int serversB = swim.getServers(SwimClient::B);
+    int serversC = swim.getServers(SwimClient::C);
+    double dimmerFactor = swim.getDimmer();
+
+    int totalServers = serversA + serversB + serversC;
+
+    int activeServersA = swim.getActiveServers(SwimClient::A);
+    int activeServersB = swim.getActiveServers(SwimClient::B);
+    int activeServersC = swim.getActiveServers(SwimClient::C);
+
+    int totalActiveServers = activeServersA + activeServersB + activeServersC;
+    bool isServerBooting = (totalServers > totalActiveServers);
+
+    if (!isServerBooting) {
+        if (activeServersA > 0) {
+            activeServersA = false;
+
+            std::string divertTrafficCmd = getDivertTrafficCommand(activeServersA, activeServersB, activeServersC);
+            swim.divertTraffic(divertTrafficCmd);
+            swim.removeServer(SwimClient::A);
+        } else if(activeServersB > 0) {
+            activeServersB = false;
+
+            std::string divertTrafficCmd = getDivertTrafficCommand(activeServersA, activeServersB, activeServersC);
+            swim.divertTraffic(divertTrafficCmd);
+            swim.removeServer(SwimClient::B);
+        } else if (activeServersC > 0) {
+            activeServersC = false;
+
+            std::string divertTrafficCmd = getDivertTrafficCommand(activeServersA, activeServersB, activeServersC);
+            swim.divertTraffic(divertTrafficCmd);
+            swim.removeServer(SwimClient::C);
+        }
+
+    }
+
+    // Compare probability for a request having an optional content
+    // More dimmer factor implies more request are served with optional content
+    // Therefore, if probability is less than 1 then increase it.
+    if (dimmerFactor < 1.0) {
+        swim.increaseDimmer();
+    }
+}
+
 void simpleAdaptationManager(SwimClient& swim) {
+    static bool test = true;
+
     while (swim.isConnected()) {
-        double dimmer = swim.getDimmer();
-        int servers = swim.getServers();
-        int activeServers = swim.getActiveServers();
-        bool isServerBooting = (servers > activeServers);
+        if (test) {
+            swim.addServer(SwimClient::C);
+            swim.decreaseDimmer();
+            test = false;
+        }
+
         double responseTime = swim.getAverageResponseTime();
 
         if (responseTime > RT_THRESHOLD) {
-            if (!isServerBooting
-                    && servers < swim.getMaxServers()) {
-                swim.addServer();
-            } else if (dimmer > 0.0) {
-                dimmer = max(0.0, dimmer - DIMMER_STEP);
-                swim.setDimmer(dimmer);
-            }
-        } else if (responseTime < RT_THRESHOLD) { // can we increase dimmer or remove servers?
-
-            // only if there is more than one server of spare capacity
-            double spareUtilization = activeServers - swim.getTotalUtilization();
-
-            if (spareUtilization > 1) {
-                if (dimmer < 1.0) {
-                    dimmer = min(1.0, dimmer + DIMMER_STEP);
-                    swim.setDimmer(dimmer);
-                } else if (!isServerBooting && servers > 1) {
-                    swim.removeServer();
-                }
-            }
+            handleHighResponseTime(swim);
+        } else if (responseTime < RT_THRESHOLD) {
+            handleLowResponseTime(swim);
         }
 
         sleep(PERIOD);

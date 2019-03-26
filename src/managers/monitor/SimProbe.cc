@@ -13,8 +13,8 @@
  * DM-0003883
  *******************************************************************************/
 #include "SimProbe.h"
-#include <model/Model.h>
-#include <managers/execution/ExecutionManagerModBase.h>
+#include <model/HPModel.h>
+#include <managers/execution/HPExecutionManagerModBase.h>
 
 using namespace omnetpp;
 
@@ -32,10 +32,10 @@ void SimProbe::initialize(int stage)
         interArrivalSignal = registerSignal("interArrival");
         getSimulation()->getSystemModule()->subscribe(interArrivalSignal, this);
 
-        serverRemovedSignal = registerSignal(ExecutionManagerModBase::SIG_SERVER_REMOVED);
-        getSimulation()->getSystemModule()->subscribe(serverRemovedSignal, this);
+        // TODO serverRemovedSignal = registerSignal(HPExecutionManagerModBase::SIG_SERVER_REMOVED);
+        // TODO getSimulation()->getSystemModule()->subscribe(serverRemovedSignal, this);
 
-        Model* pModel = check_and_cast<Model*>(
+        HPModel* pModel = check_and_cast<HPModel*>(
                         getParentModule()->getSubmodule("model"));
         window = pModel->getEvaluationPeriod();
         arrival.setWindow(window);

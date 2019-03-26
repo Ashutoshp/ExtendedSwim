@@ -21,8 +21,8 @@
 #include <vector>
 #include <functional>
 #include <map>
-#include "model/Model.h"
-#include "managers/monitor/IProbe.h"
+#include "model/HPModel.h"
+//#include "managers/monitor/IProbe.h"
 
 /**
  * Adaptation interface (probes and effectors)
@@ -35,26 +35,29 @@ public:
 
 protected:
     std::map<std::string, std::function<std::string(const std::vector<std::string>&)>> commandHandlers;
-    Model* pModel;
-    IProbe* pProbe;
+    HPModel* pModel;
+    //IProbe* pProbe;
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
 
     virtual std::string cmdAddServer(const std::vector<std::string>& args);
     virtual std::string cmdRemoveServer(const std::vector<std::string>& args);
-    virtual std::string cmdSetDimmer(const std::vector<std::string>& args);
-
+    virtual std::string cmdIncreaseDimmer(const std::vector<std::string>& args);
+    virtual std::string cmdDecreaseDimmer(const std::vector<std::string>& args);
+    virtual std::string cmdDivertTraffic(const std::vector<std::string>& args);
+    //virtual std::string cmdSetDimmer(const std::vector<std::string>& args);
     virtual std::string cmdGetDimmer(const std::vector<std::string>& args);
     virtual std::string cmdGetServers(const std::vector<std::string>& args);
     virtual std::string cmdGetActiveServers(const std::vector<std::string>& args);
     virtual std::string cmdGetMaxServers(const std::vector<std::string>& args);
-    virtual std::string cmdGetUtilization(const std::vector<std::string>& args);
-    virtual std::string cmdGetBasicResponseTime(const std::vector<std::string>& args);
-    virtual std::string cmdGetBasicThroughput(const std::vector<std::string>& args);
-    virtual std::string cmdGetOptResponseTime(const std::vector<std::string>& args);
-    virtual std::string cmdGetOptThroughput(const std::vector<std::string>& args);
+    //virtual std::string cmdGetUtilization(const std::vector<std::string>& args);
+    virtual std::string cmdGetAvgResponseTime(const std::vector<std::string>& args);
+    //virtual std::string cmdGetBasicThroughput(const std::vector<std::string>& args);
+    //virtual std::string cmdGetOptResponseTime(const std::vector<std::string>& args);
+    //virtual std::string cmdGetOptThroughput(const std::vector<std::string>& args);
     virtual std::string cmdGetArrivalRate(const std::vector<std::string>& args);
+    virtual std::string cmdGetTraffic(const std::vector<std::string>& args);
 
 private:
     static const unsigned BUFFER_SIZE = 4000;
@@ -63,6 +66,8 @@ private:
 
     char recvBuffer[BUFFER_SIZE];
     int numRecvBytes;
+
+    virtual std::string setDimmer(int discretizedBrownoutFactor);
 };
 
 #endif

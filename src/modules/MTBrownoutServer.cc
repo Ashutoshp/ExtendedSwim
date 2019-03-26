@@ -1,17 +1,57 @@
-/*******************************************************************************
- * Simulator of Web Infrastructure and Management
- * Copyright (c) 2016 Carnegie Mellon University.
- * All Rights Reserved.
- *  
- * THIS SOFTWARE IS PROVIDED "AS IS," WITH NO WARRANTIES WHATSOEVER. CARNEGIE
- * MELLON UNIVERSITY EXPRESSLY DISCLAIMS TO THE FULLEST EXTENT PERMITTED BY LAW
- * ALL EXPRESS, IMPLIED, AND STATUTORY WARRANTIES, INCLUDING, WITHOUT
- * LIMITATION, THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, AND NON-INFRINGEMENT OF PROPRIETARY RIGHTS.
- *  
- * Released under a BSD license, please see license.txt for full terms.
- * DM-0003883
- *******************************************************************************/
+//
+ // Copyright (c) 2015 Carnegie Mellon University. All Rights Reserved.
+
+ // Redistribution and use in source and binary forms, with or without
+ // modification, are permitted provided that the following conditions
+ // are met:
+
+ // 1. Redistributions of source code must retain the above copyright
+ // notice, this list of conditions and the following acknowledgments
+ // and disclaimers.
+
+ // 2. Redistributions in binary form must reproduce the above
+ // copyright notice, this list of conditions and the following
+ // disclaimer in the documentation and/or other materials provided
+ // with the distribution.
+
+ // 3. The names "Carnegie Mellon University," "SEI" and/or "Software
+ // Engineering Institute" shall not be used to endorse or promote
+ // products derived from this software without prior written
+ // permission. For written permission, please contact
+ // permission@sei.cmu.edu.
+
+ // 4. Products derived from this software may not be called "SEI" nor
+ // may "SEI" appear in their names without prior written permission of
+ // permission@sei.cmu.edu.
+
+ // 5. Redistributions of any form whatsoever must retain the following
+ // acknowledgment:
+
+ // This material is based upon work funded and supported by the
+ // Department of Defense under Contract No. FA8721-05-C-0003 with
+ // Carnegie Mellon University for the operation of the Software
+ // Engineering Institute, a federally funded research and development
+ // center.
+
+ // Any opinions, findings and conclusions or recommendations expressed
+ // in this material are those of the author(s) and do not necessarily
+ // reflect the views of the United States Department of Defense.
+
+ // NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE
+ // ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS"
+ // BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND,
+ // EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT
+ // LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY,
+ // EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE
+ // MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH
+ // RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT
+ // INFRINGEMENT.
+
+ // This material has been approved for public release and unlimited
+ // distribution.
+
+ // DM-0002494
+ //
 
 #include "MTBrownoutServer.h"
 #include "Job.h"
@@ -19,44 +59,6 @@
 Define_Module(MTBrownoutServer);
 
 #define RNG 2
-
-#define CACHING_EFFECT 1
-
-//const double cachingCount = 15747;
-//const double cachingDelta = 0.030;
-//const double cachingDeltaLow = 0.012;
-//const double cachingCount = 2000; //6750;
-
-// ICAC16
-//#define NO_CACHING_LOW 0 // LOW service requests use DB much less, so caching is not that important
-//const double cachingCount = 6750;
-//const double cachingDelta = 0.050; //0.030;
-
-//#define NO_CACHING_LOW 1 // LOW service requests use DB much less, so caching is not that important
-//const double cachingCount = 2000;
-//const double cachingDelta = 0.060; //0.030;
-//
-//const double cachingDeltaLow = 0.0019;
-//const double cachingPrecision = 0.05;
-
-std::map<std::string, long> MTBrownoutServer::requestCount;
-
-void MTBrownoutServer::clearServerCache() {
-    if (cacheClearsWhenReboot) {
-        requestCount[this->getParentModule()->getName()] = 0;
-    }
-}
-
-void MTBrownoutServer::initialize() {
-    MTServer::initialize();
-
-    cacheLow = par("cacheLow");
-    cacheRequestCount = par("cacheRequestCount");
-    cacheDelta = par("cacheDelta");
-    cacheDeltaLow = par("cacheDeltaLow");
-    cachePrecision = par("cachePrecision");
-    cacheClearsWhenReboot = par("cacheClearsWhenReboot");
-}
 
 simtime_t MTBrownoutServer::generateJobServiceTime(queueing::Job* pJob)  {
     double brownoutFactor = par("brownoutFactor");
@@ -72,21 +74,6 @@ simtime_t MTBrownoutServer::generateJobServiceTime(queueing::Job* pJob)  {
         }
         st = serviceTime;
     }
-
-#if CACHING_EFFECT
-    // exponential decay (simulate caching)
-
-    if (cacheLow || pJob->getKind() != 1) {
-        double delta = (pJob->getKind() == 1) ? cacheDeltaLow : cacheDelta;
-        double lambda = (-1 / cacheRequestCount) * (log(cachePrecision * delta) - log(delta));
-
-        /* note that this assumes that this module is inside an AppServer module with a unique name */
-        long myRequestCount = requestCount[this->getParentModule()->getName()];
-        st += delta * exp(-lambda * myRequestCount);
-        requestCount[this->getParentModule()->getName()] = ++myRequestCount;
-    }
-#endif
-
     emit(registerSignal("serviceTime"), (pJob->getKind() == 1) ? -st.dbl() : st.dbl());
 
     return st;

@@ -1,45 +1,101 @@
-/*******************************************************************************
- * Simulator of Web Infrastructure and Management
- * Copyright (c) 2016 Carnegie Mellon University.
- * All Rights Reserved.
- *  
- * THIS SOFTWARE IS PROVIDED "AS IS," WITH NO WARRANTIES WHATSOEVER. CARNEGIE
- * MELLON UNIVERSITY EXPRESSLY DISCLAIMS TO THE FULLEST EXTENT PERMITTED BY LAW
- * ALL EXPRESS, IMPLIED, AND STATUTORY WARRANTIES, INCLUDING, WITHOUT
- * LIMITATION, THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, AND NON-INFRINGEMENT OF PROPRIETARY RIGHTS.
- *  
- * Released under a BSD license, please see license.txt for full terms.
- * DM-0003883
- *******************************************************************************/
+/**
+ * Copyright (c) 2015 Carnegie Mellon University. All Rights Reserved.
+
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following acknowledgments
+ * and disclaimers.
+
+ * 2. Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+
+ * 3. The names "Carnegie Mellon University," "SEI" and/or "Software
+ * Engineering Institute" shall not be used to endorse or promote
+ * products derived from this software without prior written
+ * permission. For written permission, please contact
+ * permission@sei.cmu.edu.
+
+ * 4. Products derived from this software may not be called "SEI" nor
+ * may "SEI" appear in their names without prior written permission of
+ * permission@sei.cmu.edu.
+
+ * 5. Redistributions of any form whatsoever must retain the following
+ * acknowledgment:
+
+ * This material is based upon work funded and supported by the
+ * Department of Defense under Contract No. FA8721-05-C-0003 with
+ * Carnegie Mellon University for the operation of the Software
+ * Engineering Institute, a federally funded research and development
+ * center.
+
+ * Any opinions, findings and conclusions or recommendations expressed
+ * in this material are those of the author(s) and do not necessarily
+ * reflect the views of the United States Department of Defense.
+
+ * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE
+ * ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS"
+ * BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND,
+ * EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT
+ * LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY,
+ * EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE
+ * MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH
+ * RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT
+ * INFRINGEMENT.
+
+ * This material has been approved for public release and unlimited
+ * distribution.
+
+ * DM-0002494
+**/
+
 #ifndef UTILITYSCORER_H_
 #define UTILITYSCORER_H_
-#include <model/Configuration.h>
+//#include <model/Configuration.h>
+#include <model/HPConfiguration.h>
 #include <model/Environment.h>
 #include <model/Observations.h>
-#include <model/Model.h>
 
-#define RT_THRESHOLD omnetpp::getSimulation()->getSystemModule()->par("responseTimeThreshold").doubleValue()
+extern const double RT_THRESHOLD;
+/*extern const double SERVERA_COST_SEC;
+extern const double SERVERB_COST_SEC;
+extern const double SERVERC_COST_SEC;
 
-/*
- * MAX_SERVICE_RATE is the max number of requests/sec a single server can
- * process with normal service.
- */
-#define MAX_SERVICE_RATE omnetpp::getSimulation()->getSystemModule()->par("maxServiceRate").doubleValue()
+extern const double MAX_ARRIVAL_CAPACITY;
+extern const double MAX_ARRIVAL_CAPACITY_LOW;
+
+extern const double MAX_ARRIVALA_CAPACITY;
+extern const double MAX_ARRIVALA_CAPACITY_LOW;
+extern const double MAX_ARRIVALB_CAPACITY;
+extern const double MAX_ARRIVALB_CAPACITY_LOW;
+extern const double MAX_ARRIVALC_CAPACITY;
+extern const double MAX_ARRIVALC_CAPACITY_LOW;
+
+extern const double NORMAL_A_REVENUE;
+extern const double DIMMER_A_REVENUE;
+extern const double NORMAL_B_REVENUE;
+extern const double DIMMER_B_REVENUE;
+extern const double NORMAL_C_REVENUE;
+extern const double DIMMER_C_REVENUE;*/
 
 class UtilityScorer {
 protected:
     UtilityScorer() {}; // no instances
 
-    static const char* OPT_REVENUE;
-    static const char* PENALTY_MULTIPLIER;
-
 public:
+    //static double getUtility(const Configuration& configuration, const Environment& environment, const Observations& observations);
+    //static double getUtility(const HPConfiguration& configuration, const Environment& environment, const Observations& observations);
 
-    /**
-     * Computes utility accrued
-     */
-    static double getAccruedUtility(const Model& model, const Configuration& configuration, const Environment& environment, const Observations& observations);
+    //static double getPeriodUtility(const Configuration& configuration, double revenue, double periodLength);
+    static double getPeriodUtility(const HPConfiguration& configuration, double revenue, double periodLength);
+    static double getPeriodUtility(const HPConfiguration& configuration,
+            double revenue, double avgResponseTime, double requestCount, double periodLength);
+    static double getRequestUtility(double responseTime, bool lowService, MTServerAdvance::ServerType);
+    static double getRequestUtility(double responseTime, bool lowService);
 };
 
 #endif /* UTILITYSCORER_H_ */

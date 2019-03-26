@@ -21,6 +21,33 @@
 using boost::asio::ip::tcp;
 using namespace std;
 
+/*std::string SwimClient::cmdAddServerA = "addServerA_start";
+std::string SwimClient::cmdAddServerB = "addServerB_start";
+std::string SwimClient::cmdAddServerC = "addServerC_start";*/
+
+/*std::string SwimClient::cmdRemoveServerA = "removeServerA_start";
+std::string SwimClient::cmdRemoveServerB = "removeServerB_start";
+std::string SwimClient::cmdRemoveServerC = "removeServerC_start";*/
+
+std::string SwimClient::cmdDecDimmer = "dec_dimmer";
+std::string SwimClient::cmdIncDimmer = "inc_dimmer";
+
+std::string SwimClient::cmdDivertTraffic_100_0_0 = "divert_100_0_0";
+std::string SwimClient::cmdDivertTraffic_75_25_0 = "divert_75_25_0";
+std::string SwimClient::cmdDivertTraffic_75_0_25 = "divert_75_0_25";
+std::string SwimClient::cmdDivertTraffic_50_50_0 = "divert_50_50_0";
+std::string SwimClient::cmdDivertTraffic_50_0_50 = "divert_50_0_50";
+std::string SwimClient::cmdDivertTraffic_50_25_25 = "divert_50_25_25";
+std::string SwimClient::cmdDivertTraffic_25_75_0 = "divert_25_75_0";
+std::string SwimClient::cmdDivertTraffic_25_0_75 = "divert_25_0_75";
+std::string SwimClient::cmdDivertTraffic_25_50_25 = "divert_25_50_25";
+std::string SwimClient::cmdDivertTraffic_25_25_50 = "divert_25_25_50";
+std::string SwimClient::cmdDivertTraffic_0_100_0 = "divert_0_100_0";
+std::string SwimClient::cmdDivertTraffic_0_0_100 = "divert_0_0_100";
+std::string SwimClient::cmdDivertTraffic_0_75_25 = "divert_0_75_25";
+std::string SwimClient::cmdDivertTraffic_0_25_75 = "divert_0_25_75";
+std::string SwimClient::cmdDivertTraffic_0_50_50 = "divert_0_50_50";
+
 SwimClient::SwimClient() : socket(ioService) {
 }
 
@@ -98,62 +125,101 @@ double SwimClient::getDimmer() {
     return probeDouble("get_dimmer\n");
 }
 
-int SwimClient::getServers() {
-    return probeInt("get_servers\n");
+int SwimClient::getServers(SwimClient::ServerType serverType) {
+    ostringstream cmd;
+    cmd << "get_servers " << serverType << '\n';
+
+    return probeInt(cmd.str().c_str());
 }
 
-int SwimClient::getActiveServers() {
-    return probeInt("get_active_servers\n");
+int SwimClient::getActiveServers(SwimClient::ServerType serverType) {
+    ostringstream cmd;
+    cmd << "get_active_servers " << serverType << '\n';
+
+    return probeInt(cmd.str().c_str());
 }
 
-int SwimClient::getMaxServers() {
-    return probeInt("get_max_servers\n");
+int SwimClient::getMaxServers(SwimClient::ServerType serverType) {
+    ostringstream cmd;
+    cmd << "get_max_servers " << serverType << '\n';
+
+    return probeInt(cmd.str().c_str());
 }
 
+/*
 double SwimClient::getUtilization(int serverId) {
     ostringstream cmd;
     cmd << "get_utilization server" << serverId << '\n';
     return probeDouble(cmd.str().c_str());
 }
 
-double SwimClient::getBasicResponseTime() {
-    return probeDouble("get_basic_rt\n");
-}
 
 double SwimClient::getOptionalResponseTime() {
     return probeDouble("get_opt_rt\n");
-}
-
-double SwimClient::getBasicThroughput() {
-    return probeDouble("get_basic_throughput\n");
 }
 
 double SwimClient::getOptionalThroughput() {
     return probeDouble("get_opt_throughput\n");
 }
 
+double SwimClient::getBasicThroughput() {
+    return probeDouble("get_basic_throughput\n");
+}
+
+*/
+
+
+double SwimClient::getAverageResponseTime() {
+    return probeDouble("get_avg_rt\n");
+}
+
 double SwimClient::getArrivalRate() {
     return probeDouble("get_arrival_rate\n");
 }
 
-void SwimClient::addServer() {
-    sendCommand("add_server\n");
+void SwimClient::addServer(SwimClient::ServerType serverType) {
+    ostringstream cmd;
+    cmd << "add_server " << serverType << '\n';
+
+    sendCommand(cmd.str().c_str());
 }
 
-void SwimClient::removeServer() {
-    sendCommand("remove_server\n");
+void SwimClient::removeServer(SwimClient::ServerType serverType) {
+    ostringstream cmd;
+    cmd << "remove_server " << serverType << '\n';
+
+    sendCommand(cmd.str().c_str());
 }
 
-void SwimClient::setDimmer(double dimmer) {
+/*void SwimClient::setDimmer(double dimmer) {
     ostringstream cmd;
     cmd << "set_dimmer " << dimmer << '\n';
     probeDouble(cmd.str().c_str());
+}*/
+
+void SwimClient::increaseDimmer() {
+    ostringstream cmd;
+    cmd << SwimClient::cmdIncDimmer << " \n";
+    sendCommand(cmd.str().c_str());
+}
+
+void SwimClient::decreaseDimmer() {
+    ostringstream cmd;
+    cmd << SwimClient::cmdDecDimmer << " \n";
+    sendCommand(cmd.str().c_str());
+}
+
+void SwimClient::divertTraffic(std::string divertTrafficCmd) {
+    ostringstream cmd;
+    cmd << "divert_traffic " << divertTrafficCmd << '\n';
+    sendCommand(cmd.str().c_str());
 }
 
 SwimClient::~SwimClient() {
     socket.close();
 }
 
+/*
 double SwimClient::getTotalUtilization() {
     double utilization = 0;
     int activeServers = getActiveServers();
@@ -172,3 +238,4 @@ double SwimClient::getAverageResponseTime() {
 
     return avgResponseTime;
 }
+*/

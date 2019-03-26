@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for swim
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -o swim -KQUEUEINGLIB_PROJ=../../queueinglib -I. -Imodel/pladaptMock -I$$\(QUEUEINGLIB_PROJ\) -I../queueinglib -L$$\(QUEUEINGLIB_PROJ\) -lqueueinglib_dbg -lboost_serialization -lboost_system -lboost_filesystem -lpthread -- -lboost_system
+#  opp_makemake -f --deep -o swim -KQUEUEINGLIB_PROJ=../../queueinglib -I. -Imodel/pladaptMock -I$$\(QUEUEINGLIB_PROJ\) -I/home/ashutosp/rainbow/swim/queueinglib -Imodules -Imanagers -Imodel -Imanagers/adaptation -Imanagers/execution -Imanagers/monitor -Iutil -L$$\(QUEUEINGLIB_PROJ\) -lqueueinglib_dbg -lboost_serialization -lboost_system -lboost_filesystem -lpthread -- -lboost_system
 #
 
 # Name of target to be created (-o option)
@@ -16,7 +16,18 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LI
 #USERIF_LIBS = $(QTENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -Imodel/pladaptMock -I$(QUEUEINGLIB_PROJ) -I../queueinglib
+INCLUDE_PATH = \
+    -I. \
+    -Imodel/pladaptMock \
+    -I$(QUEUEINGLIB_PROJ) \
+    -I/home/ashutosp/rainbow/swim/queueinglib \
+    -Imodules \
+    -Imanagers \
+    -Imodel \
+    -Imanagers/adaptation \
+    -Imanagers/execution \
+    -Imanagers/monitor \
+    -Iutil
 
 # Additional object and library files to link with
 EXTRA_OBJS = -lboost_system
@@ -32,34 +43,39 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 # Object files for local .cc, .msg and .sm files
 OBJS = \
     $O/externalControl/AdaptInterface.o \
-    $O/managers/adaptation/BaseAdaptationManager.o \
-    $O/managers/adaptation/ReactiveAdaptationManager.o \
-    $O/managers/adaptation/ReactiveAdaptationManager2.o \
     $O/managers/adaptation/UtilityScorer.o \
-    $O/managers/execution/AddServerTactic.o \
-    $O/managers/execution/ExecutionManagerHAProxy.o \
-    $O/managers/execution/ExecutionManagerMod.o \
-    $O/managers/execution/ExecutionManagerModBase.o \
+    $O/managers/execution/HPAddServerTactic.o \
+    $O/managers/execution/HPDivertTraffic.o \
+    $O/managers/execution/HPExecutionManagerMod.o \
+    $O/managers/execution/HPExecutionManagerModBase.o \
+    $O/managers/execution/HPRemoveServerTactic.o \
     $O/managers/execution/MacroTactic.o \
-    $O/managers/execution/RemoveServerTactic.o \
     $O/managers/execution/SetBrownoutTactic.o \
-    $O/managers/execution/SetDimmerTactic.o \
     $O/managers/execution/Tactic.o \
-    $O/managers/monitor/HAProxyProbe.o \
+    $O/managers/monitor/HPMonitor.o \
     $O/managers/monitor/IProbe.o \
-    $O/managers/monitor/SimpleMonitor.o \
     $O/managers/monitor/SimProbe.o \
     $O/model/Configuration.o \
     $O/model/Environment.o \
-    $O/model/Model.o \
+    $O/model/HPConfiguration.o \
+    $O/model/HPModel.o \
+    $O/model/NotDetEnvModel.o \
     $O/model/Observations.o \
     $O/modules/ArrivalMonitor.o \
+    $O/modules/BootServer.o \
+    $O/modules/HPLoadBalancer.o \
+    $O/modules/LoadBalancer.o \
     $O/modules/MTBrownoutServer.o \
     $O/modules/MTServer.o \
+    $O/modules/MTServerA.o \
+    $O/modules/MTServerAdvance.o \
+    $O/modules/MTServerB.o \
+    $O/modules/MTServerC.o \
     $O/modules/PassiveQueueDyn.o \
     $O/modules/PredictableRandomSource.o \
     $O/modules/PredictableRateSource.o \
     $O/modules/PredictableSource.o \
+    $O/util/DebugFileInfo.o \
     $O/util/GMcQueue.o \
     $O/util/HAProxySocketCommand.o \
     $O/util/MMcQueue.o \

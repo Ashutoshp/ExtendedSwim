@@ -1,36 +1,74 @@
-/*******************************************************************************
- * Simulator of Web Infrastructure and Management
- * Copyright (c) 2016 Carnegie Mellon University.
- * All Rights Reserved.
+/*
+ * Utils.h
  *
- * THIS SOFTWARE IS PROVIDED "AS IS," WITH NO WARRANTIES WHATSOEVER. CARNEGIE
- * MELLON UNIVERSITY EXPRESSLY DISCLAIMS TO THE FULLEST EXTENT PERMITTED BY LAW
- * ALL EXPRESS, IMPLIED, AND STATUTORY WARRANTIES, INCLUDING, WITHOUT
- * LIMITATION, THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, AND NON-INFRINGEMENT OF PROPRIETARY RIGHTS.
- *
- * Released under a BSD license, please see license.txt for full terms.
- * DM-0003883
- *******************************************************************************/
+ *  Created on: Dec 19, 2017
+ *      Author: ashutosp
+ */
 
 #ifndef UTIL_UTILS_H_
 #define UTIL_UTILS_H_
 
-#include <omnetpp.h>
+#include <string>
+#include <vector>
+#include <model/HPModel.h>
+#include <fstream>
 
-class Utils {
+using namespace std;
+
+
+class DumpPlanningProblems {
+
+private:
+    static DumpPlanningProblems* mDumpPlanningProblems;
+    const string mLocation;
+    const string mModelTemplate;
+    const string mSpecFileName;
+    const string mStatesFileName;
+    const string mLabelsFileName;
+    const string mAdversaryFileName;
+    const string mFastDirName;
+    const string mSlowDirName;
+    const string mFeaturesFileName;
+    const string mTempDirTemplate;
+
+    DumpPlanningProblems(const string& location);
+    void writeHeader(ofstream& fout);
+
+
 public:
+    static DumpPlanningProblems* get_instance(const string& location) {
+        if (mDumpPlanningProblems == NULL) {
+            mDumpPlanningProblems = new DumpPlanningProblems(location);
+        }
 
-    /**
-     * Attempts to get mean and variance from a parameter that is assigned
-     * a random distribution in the ini file
-     *
-     * @param par parameter to get the values from
-     * @param variance non-null pointer if variance is desired
-     */
-    static double getMeanAndVarianceFromParameter(const omnetpp::cPar& par, double* variance = nullptr);
+        return mDumpPlanningProblems;
+    }
 
-    virtual ~Utils();
+    void copySampleProblems(
+            const string& reactivePlanDir,
+            const string& deliberativePlanDir,
+            HPModel* hpModel,
+            const std::vector<double>& arrivalRates, double classifierLabel, const string& traceName = "");
+
+    void copyFileFromFast(const string& source, const string& destination);
+    void copyFileFromSlow(const string& source, const string& destination);
+    void writeInitialStateVariables(ofstream& fout, HPModel* hpModel);
+    void writeData(const string& destinationDir, const string& reactivePlanDir,
+            const string& deliberativePlanDir, HPModel* hpModel,
+            const std::vector<double>& arrivalRates, double classifierLabel, const string& traceName);
+
+    ~DumpPlanningProblems();
 };
 
+int create_directory(const char* path);
+string create_temp_directory(const char* tempDirTemp);
+//void copy_files_from_directory(const string& source, const string& destination);
+void copy_file(const char* fileNameFrom, const char* fileNameTo);
+//void copySampleProblems(const string& reactive_plan_dir,
+//        const string& deliberative_plan_dir, const string& location, const std::vector<double>& features);
+//void copy_file_from_fast(const string& source, const string& destination);
+//void copy_file_from_slow(const string& source, const string& destination);
+void test_utils(string location);
+
 #endif /* UTIL_UTILS_H_ */
+
