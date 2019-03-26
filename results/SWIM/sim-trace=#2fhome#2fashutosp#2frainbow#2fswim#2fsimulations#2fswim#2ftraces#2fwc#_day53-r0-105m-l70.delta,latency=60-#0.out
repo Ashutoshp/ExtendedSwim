@@ -1,0 +1,2 @@
+
+<!> Error: Submodule model: Cannot resolve module type 'Model' (not in the loaded NED files?), at /home/ashutosp/swimExtended/swim/simulations/swim/swim.ned:71 -- in module (omnetpp::cModule) SWIM (id=1), during network setup

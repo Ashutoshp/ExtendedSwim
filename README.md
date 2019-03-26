@@ -116,3 +116,6 @@ To launch the OMNeT++ IDE, launch Applications > Development > OMNeT++.
 
 The external adaptation manager is included in the project `simple_am` in the work space.
 The adaptation manager that works as a simulation module, which is called `ReactiveAdaptationManager`, is located in `swim/src/managers/adaptation/`.
+=======
+# ExtendedSwim
+Extended version of SWIM that has three types of servers
