@@ -165,6 +165,7 @@ void HPExecutionManagerModBase::addServer(MTServerAdvance::ServerType serverType
 }
 
 void HPExecutionManagerModBase::addServerLatencyOptional(MTServerAdvance::ServerType serverType, bool instantaneous) {
+    // This tells simulation kernel that this method can be invoked directly by the methods of other modules.
     Enter_Method("addServer()");
     int serverCount = pModel->getConfiguration().getServers(serverType);
     ASSERT(serverCount < pModel->getMaxServers(serverType));

@@ -96,6 +96,8 @@ void HPExecutionManagerMod::handleMessage(cMessage *msg) {
         MTServerAdvance::ServerType serverType = getServerTypeFromName(module->getFullName());
         module->gate("out")->disconnect();
         module->deleteModule();
+
+        // TODO send server name instead of type to support multiple servers of same type.
         notifyRemoveServerCompleted(serverType);
 
         serverBeingRemovedModuleId = -1;
@@ -153,6 +155,7 @@ string HPExecutionManagerMod::getModuleStr(MTServerAdvance::ServerType serverTyp
     return module_str;
 }
 
+// This function connects the server input and output
 void HPExecutionManagerMod::doAddServerBootComplete(BootComplete* bootComplete) {
     cModule *server = omnetpp::getSimulation()->getModule(bootComplete->getModuleId());
     cModule* loadBalancer = getParentModule()->getSubmodule(
@@ -167,6 +170,8 @@ void HPExecutionManagerMod::doAddServerBootComplete(BootComplete* bootComplete) 
     std::cout << "HPExecutionManagerMod::doAddServerBootComplete " << std::endl;
 }
 
+// This functions creates a server module with an initial configuration.
+// Return boot complete message to be used when bootup is complete.
 BootComplete* HPExecutionManagerMod::doAddServer(MTServerAdvance::ServerType serverType, bool instantaneous) {
     // find factory object
     cModuleType *moduleType = cModuleType::get(getModuleStr(serverType).c_str());
@@ -229,11 +234,12 @@ BootComplete*  HPExecutionManagerMod::doRemoveServer(MTServerAdvance::ServerType
             // NOTE: Vector size is still the same i.e. Ideally it should be reduced by 1.
 
         } else {
+            // TODO this code is not used in case of multiple servers.
             ASSERT(pModel->getConfiguration().getTotalActiveServers() == otherEnd->getVectorSize() - 1);
 
             // reduce the size of the out gate in the queue module
             otherEnd->getOwnerModule()->setGateSize(otherEnd->getName(), otherEnd->getVectorSize() - 1);
-            //GABE TODO this is probably leaking memory because the gate may not be being deleted
+            //TODO this is probably leaking memory because the gate may not be being deleted
         }
     }
 

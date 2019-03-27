@@ -87,11 +87,13 @@ MTServerAdvance::ServerType HPConfiguration::getBootType() const {
 }
 
 void HPConfiguration::setBootRemain(int bootRemain, MTServerAdvance::ServerType serverType) {
-    std::cout << "HPConfiguration::setBootRemain = " << bootRemain << " for Type = " << serverType << std::endl;
+    //std::cout << "HPConfiguration::setBootRemain = " << bootRemain << " for Type = " << serverType << std::endl;
 
     this->mBootRemain = bootRemain;
 
-    if (serverType != MTServerAdvance::ServerType::NONE) {
+    if (this->mBootRemain == 0) {
+        this->mBootServerType = MTServerAdvance::ServerType::NONE;
+    } else if (serverType != MTServerAdvance::ServerType::NONE) {
         this->mBootServerType = serverType;
     }
 }

@@ -159,7 +159,7 @@ class HPModel : public omnetpp::cSimpleModule
       /**
        * Returns the expected number of active servers at a time in the future
        */
-      //bool isServerBooting(MTServerAdvance::ServerType serverType) const;
+      bool isServerBooting(MTServerAdvance::ServerType serverType) const;
       bool isServerBooting() const;
       int getActiveServerCountIn(double deltaTime, MTServerAdvance::ServerType type);
       void setBrownoutFactor(double factor);
