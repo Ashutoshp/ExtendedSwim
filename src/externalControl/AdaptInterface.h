@@ -19,6 +19,7 @@
 #include <omnetpp.h>
 #include <string>
 #include <vector>
+#include <stack>
 #include <functional>
 #include <map>
 #include "model/HPModel.h"
@@ -66,8 +67,10 @@ private:
 
     char recvBuffer[BUFFER_SIZE];
     int numRecvBytes;
+    std::stack<std::string> commandStack;
 
     virtual std::string setDimmer(int discretizedBrownoutFactor);
+    void extractCommands(const std::string& str);
 };
 
 #endif

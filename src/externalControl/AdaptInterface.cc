@@ -68,20 +68,74 @@ void AdaptInterface::initialize()
     //pProbe = check_and_cast<IProbe*> (gate("probe")->getPreviousGate()->getOwnerModule());
 }
 
+void AdaptInterface::extractCommands(const std::string& str) {
+    string cmd = "";
+
+    unsigned index = 0;
+
+    while (index < str.length()) {
+        if (str[index] != '\n') {
+            cmd += str[index];
+        } else {
+            commandStack.push(cmd);
+            cmd = "";
+        }
+
+        ++index;
+    }
+}
+
 void AdaptInterface::handleMessage(cMessage *msg)
 {
     if (msg == rtEvent) {
 
         // get data from buffer
         string input = string(recvBuffer, numRecvBytes);
-        numRecvBytes = 0;
-#if DEBUG_ADAPT_INTERFACE
-        EV << "received [" << input << "]" << endl;
-#endif
-        std::istringstream inputStream(input);
 
-        std::string line;
-        while (std::getline(inputStream, line))
+#if DEBUG_ADAPT_INTERFACE
+            cout << "received input is [" << input << "]" << endl;
+#endif
+
+        extractCommands(input);
+        numRecvBytes = 0;
+
+        while (commandStack.size() > 0) {
+            string cmd = commandStack.top();
+            commandStack.pop();
+            //cmd.erase(line.find_last_not_of("\r\n") + 1);
+#if DEBUG_ADAPT_INTERFACE
+            cout << "executing command is [" << cmd << "]" << endl;
+#endif
+            typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+            tokenizer tokens(cmd, boost::char_separator<char>(" "));
+            tokenizer::iterator it = tokens.begin();
+            if (it != tokens.end()) {
+                string command = *it;
+                vector<string> args;
+                while (++it != tokens.end()) {
+                    args.push_back(*it);
+                }
+
+                auto handler = commandHandlers.find(command);
+                if (handler == commandHandlers.end()) {
+                    rtScheduler->sendBytes(UNKNOWN_COMMAND.c_str(), UNKNOWN_COMMAND.length());
+                } else {
+                    string reply = commandHandlers[command](args);
+#if DEBUG_ADAPT_INTERFACE
+cout << "command reply is[" << reply << ']' << endl;
+#endif
+rtScheduler->sendBytes(reply.c_str(), reply.length());
+                }
+            }
+        }
+//#if DEBUG_ADAPT_INTERFACE
+//        std::cout << "received [" << input << "]" << std::endl;
+//#endif
+//        std::istringstream inputStream(input);
+
+//        std::string line;
+
+        /*while (std::getline(inputStream, line))
         {
             line.erase(line.find_last_not_of("\r\n") + 1);
 #if DEBUG_ADAPT_INTERFACE
@@ -109,7 +163,7 @@ void AdaptInterface::handleMessage(cMessage *msg)
                 }
             }
 
-        }
+        }*/
 
     }
 }
