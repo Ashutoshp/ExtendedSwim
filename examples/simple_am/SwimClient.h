@@ -96,6 +96,8 @@ public:
     // helper methods
     //double getTotalUtilization();
     double getAverageResponseTime();
+    double getRevenue();
+    void resetRevenue();
 
     virtual ~SwimClient();
 };

@@ -23,6 +23,8 @@
 #include <functional>
 #include <map>
 #include "model/HPModel.h"
+#include "managers/monitor/HPMonitor.h"
+
 //#include "managers/monitor/IProbe.h"
 
 /**
@@ -37,6 +39,7 @@ public:
 protected:
     std::map<std::string, std::function<std::string(const std::vector<std::string>&)>> commandHandlers;
     HPModel* pModel;
+    HPMonitor* pMonitor;
     //IProbe* pProbe;
 
     virtual void initialize();
@@ -59,6 +62,9 @@ protected:
     //virtual std::string cmdGetOptThroughput(const std::vector<std::string>& args);
     virtual std::string cmdGetArrivalRate(const std::vector<std::string>& args);
     virtual std::string cmdGetTraffic(const std::vector<std::string>& args);
+    virtual std::string cmdGetRevenue(const std::vector<std::string>& args);
+    virtual std::string cmdResetRevenue(const std::vector<std::string>& args);
+
 
 private:
     static const unsigned BUFFER_SIZE = 4000;

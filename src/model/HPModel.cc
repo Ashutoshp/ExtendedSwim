@@ -468,7 +468,8 @@ void dump_arrival_rate(const double & arrival_rate) {
     string file_name = DebugFileInfo::getInstance()->GetRequestArrivalFilePath();
     //        "/home/ashutosp/Dropbox/regression/HPModel_arrival_rate";
     std::ofstream myfile;
-
+    std::cout << "arrivaRate = " << 1/arrival_rate
+            << " " << arrival_rate << std::endl;
     myfile.open(file_name, ios::app);
     myfile << 1/arrival_rate << "\n";
     myfile.close();

@@ -251,7 +251,9 @@ void HPMonitor::handleMessage(cMessage *msg) {
             // reset statistics
             responseTimeCumulativePeriod = 0;
             responseTimeCountPeriod = 0;
-            requestUtilityCumulative = 0;
+            // This is controlled by external manager
+            // Use resetPeriodRevenue
+            //requestUtilityCumulative = 0;
         }
 
         pInterArrivalStats.reset(new InterArrivalStats);

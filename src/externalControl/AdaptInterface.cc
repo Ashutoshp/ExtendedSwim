@@ -51,6 +51,8 @@ AdaptInterface::AdaptInterface() {
     //commandHandlers["get_opt_throughput"] = std::bind(&AdaptInterface::cmdGetOptThroughput, this, std::placeholders::_1);
     commandHandlers["get_arrival_rate"] = std::bind(&AdaptInterface::cmdGetArrivalRate, this, std::placeholders::_1);
     commandHandlers["get_traffic"] = std::bind(&AdaptInterface::cmdGetTraffic, this, std::placeholders::_1);
+    commandHandlers["get_revenue"] = std::bind(&AdaptInterface::cmdGetRevenue, this, std::placeholders::_1);
+    commandHandlers["reset_revenue"] = std::bind(&AdaptInterface::cmdResetRevenue, this, std::placeholders::_1);
 
     // dimmer, numServers, numActiveServers, utilization(total or indiv), response time and throughput for mandatory and optional, avg arrival rate
 }
@@ -65,6 +67,7 @@ void AdaptInterface::initialize()
     rtScheduler = check_and_cast<cSocketRTScheduler *>(getSimulation()->getScheduler());
     rtScheduler->setInterfaceModule(this, rtEvent, recvBuffer, BUFFER_SIZE, &numRecvBytes);
     pModel = check_and_cast<HPModel*> (getParentModule()->getSubmodule("model"));
+    pMonitor = check_and_cast<HPMonitor*> (getParentModule()->getSubmodule("monitor"));
     //pProbe = check_and_cast<IProbe*> (gate("probe")->getPreviousGate()->getOwnerModule());
 }
 
@@ -92,6 +95,7 @@ void AdaptInterface::handleMessage(cMessage *msg)
         // get data from buffer
         string input = string(recvBuffer, numRecvBytes);
 
+        /*
 #if DEBUG_ADAPT_INTERFACE
             cout << "received input is [" << input << "]" << endl;
 #endif
@@ -128,14 +132,15 @@ rtScheduler->sendBytes(reply.c_str(), reply.length());
                 }
             }
         }
-//#if DEBUG_ADAPT_INTERFACE
-//        std::cout << "received [" << input << "]" << std::endl;
-//#endif
-//        std::istringstream inputStream(input);
+        */
+#if DEBUG_ADAPT_INTERFACE
+        std::cout << "received [" << input << "]" << std::endl;
+#endif
+        std::istringstream inputStream(input);
 
-//        std::string line;
+        std::string line;
 
-        /*while (std::getline(inputStream, line))
+        while (std::getline(inputStream, line))
         {
             line.erase(line.find_last_not_of("\r\n") + 1);
 #if DEBUG_ADAPT_INTERFACE
@@ -163,7 +168,7 @@ rtScheduler->sendBytes(reply.c_str(), reply.length());
                 }
             }
 
-        }*/
+        }
 
     }
 }
@@ -438,6 +443,22 @@ std::string AdaptInterface::cmdGetAvgResponseTime(
     reply << pModel->getAvgResponseTime() << '\n';
 
     return reply.str();
+}
+
+std::string AdaptInterface::cmdGetRevenue(
+        const std::vector<std::string>& args) {
+    ostringstream reply;
+    reply << pMonitor->periodRevenue() << '\n';
+
+    return reply.str();
+}
+
+std::string AdaptInterface::cmdResetRevenue(
+        const std::vector<std::string>& args) {
+
+    pMonitor->resetPeriodRevenue();
+
+    return COMMAND_SUCCESS;
 }
 
 /*

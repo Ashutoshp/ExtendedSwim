@@ -129,13 +129,17 @@ void simpleAdaptationManager(SwimClient& swim) {
     static bool test = true;
 
     while (swim.isConnected()) {
-        if (test) {
+/*        if (test) {
             swim.addServer(SwimClient::C);
             swim.decreaseDimmer();
             test = false;
         }
-
+*/
         double responseTime = swim.getAverageResponseTime();
+        double arrivalRate = swim.getArrivalRate();
+
+        std::cout << "Response Time = " << responseTime << std::endl;
+        std::cout << "Arrival Rate = " << arrivalRate << std::endl;
 
         if (responseTime > RT_THRESHOLD) {
             handleHighResponseTime(swim);
@@ -143,6 +147,9 @@ void simpleAdaptationManager(SwimClient& swim) {
             handleLowResponseTime(swim);
         }
 
+        double revenue = swim.getRevenue();
+        cout << "revenue = " << revenue << endl;
+        swim.resetRevenue();
         sleep(PERIOD);
     }
 }

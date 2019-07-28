@@ -215,6 +215,16 @@ void SwimClient::divertTraffic(std::string divertTrafficCmd) {
     sendCommand(cmd.str().c_str());
 }
 
+void SwimClient::resetRevenue() {
+    ostringstream cmd;
+    cmd << "reset_revenue " << '\n';
+    sendCommand(cmd.str().c_str());
+}
+
+double SwimClient::getRevenue() {
+    return probeDouble("get_revenue\n");
+}
+
 SwimClient::~SwimClient() {
     socket.close();
 }

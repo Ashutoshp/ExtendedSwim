@@ -129,6 +129,8 @@ protected:
     void receiveSignal(cComponent *source, simsignal_t signalID, bool value, cObject *details);
     void receiveSignal(cComponent *source, simsignal_t signalID, double value, cObject *details);
     void receiveSignal(cComponent *source, simsignal_t signalID, const char* jobName, cObject *details);
+    void resetPeriodRevenue() {requestUtilityCumulative = 0;}
+    void periodRevenue() {return requestUtilityCumulative;}
 
     virtual ~HPMonitor();
 };
