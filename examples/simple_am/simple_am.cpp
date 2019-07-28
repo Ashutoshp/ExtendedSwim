@@ -141,11 +141,11 @@ void simpleAdaptationManager(SwimClient& swim) {
         std::cout << "Response Time = " << responseTime << std::endl;
         std::cout << "Arrival Rate = " << arrivalRate << std::endl;
 
-        if (responseTime > RT_THRESHOLD) {
+        /*if (responseTime > RT_THRESHOLD) {
             handleHighResponseTime(swim);
         } else if (responseTime < RT_THRESHOLD) {
             handleLowResponseTime(swim);
-        }
+        }*/
 
         double revenue = swim.getRevenue();
         cout << "revenue = " << revenue << endl;

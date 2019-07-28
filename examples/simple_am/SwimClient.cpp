@@ -228,24 +228,3 @@ double SwimClient::getRevenue() {
 SwimClient::~SwimClient() {
     socket.close();
 }
-
-/*
-double SwimClient::getTotalUtilization() {
-    double utilization = 0;
-    int activeServers = getActiveServers();
-    for (int s = 1; s <= activeServers; s++) {
-        utilization += getUtilization(s);
-    }
-    return utilization;
-}
-
-double SwimClient::getAverageResponseTime() {
-    double basicTput = getBasicThroughput();
-    double optTput = getOptionalThroughput();
-
-    double avgResponseTime = basicTput * getBasicResponseTime()
-            + optTput * getOptionalResponseTime() / (basicTput + optTput);
-
-    return avgResponseTime;
-}
-*/

@@ -448,7 +448,9 @@ std::string AdaptInterface::cmdGetAvgResponseTime(
 std::string AdaptInterface::cmdGetRevenue(
         const std::vector<std::string>& args) {
     ostringstream reply;
-    reply << pMonitor->periodRevenue() << '\n';
+    double revenue = pMonitor->periodRevenue();
+    //cout << "revenue send = " << revenue << endl;
+    reply << revenue << '\n';
 
     return reply.str();
 }
