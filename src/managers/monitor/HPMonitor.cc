@@ -241,7 +241,7 @@ void HPMonitor::handleMessage(cMessage *msg) {
     #endif
             double periodUtility = UtilityScorer::getPeriodUtility(
                     pModel->getConfiguration(), requestUtilityCumulative, pModel->getEvaluationPeriod());
-            //cout << "HPMonitor::handleMessage Revenue = " << requestUtilityCumulative << endl;
+            cout << "HPMonitor::handleMessage Revenue = " << requestUtilityCumulative << endl;
 
             //double periodUtility = UtilityScorer::getPeriodUtility(
             //                    pModel->getConfiguration(), requestUtilityCumulative,
@@ -252,9 +252,8 @@ void HPMonitor::handleMessage(cMessage *msg) {
             // reset statistics
             responseTimeCumulativePeriod = 0;
             responseTimeCountPeriod = 0;
-            // This is controlled by external manager
-            // Use resetPeriodRevenue
-            //requestUtilityCumulative = 0;
+            // This can also be controlled by external manager Use resetPeriodRevenue
+            requestUtilityCumulative = 0;
         }
 
         pInterArrivalStats.reset(new InterArrivalStats);

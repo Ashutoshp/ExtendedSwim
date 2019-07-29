@@ -147,9 +147,9 @@ void simpleAdaptationManager(SwimClient& swim) {
             handleLowResponseTime(swim);
         }*/
 
-        double revenue = swim.getRevenue();
-        cout << "revenue = " << revenue << endl;
-        swim.resetRevenue();
+        //double revenue = swim.getRevenue();
+        //cout << "revenue = " << revenue << endl;
+        //swim.resetRevenue();
         sleep(PERIOD);
     }
 }
