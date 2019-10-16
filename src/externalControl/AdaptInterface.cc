@@ -94,6 +94,8 @@ void AdaptInterface::handleMessage(cMessage *msg)
 
         // get data from buffer
         string input = string(recvBuffer, numRecvBytes);
+        //cout << "numRecvBytes = " << numRecvBytes << endl;
+        numRecvBytes = 0;
 
         /*
 #if DEBUG_ADAPT_INTERFACE
@@ -144,7 +146,7 @@ rtScheduler->sendBytes(reply.c_str(), reply.length());
         {
             line.erase(line.find_last_not_of("\r\n") + 1);
 #if DEBUG_ADAPT_INTERFACE
-            cout << "received line is [" << line << "]" << endl;
+            //cout << "received line is [" << line << "]" << endl;
 #endif
             typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
             tokenizer tokens(line, boost::char_separator<char>(" "));
@@ -388,7 +390,11 @@ std::string AdaptInterface::cmdGetActiveServers(const std::vector<std::string>& 
     MTServerAdvance::ServerType serverType = MTServerAdvance::ServerType(atoi(args[0].c_str()));
 
     ostringstream reply;
+    //int activeServers = pModel->getConfiguration().getActiveServers(serverType);
+    //bool boolActiveServers = activeServers > 0 ? true : false;  // Hack
+
     reply << pModel->getConfiguration().getActiveServers(serverType) << '\n';
+    //reply << boolActiveServers << '\n';
 
     return reply.str();
 }
@@ -396,7 +402,7 @@ std::string AdaptInterface::cmdGetActiveServers(const std::vector<std::string>& 
 
 std::string AdaptInterface::cmdGetMaxServers(const std::vector<std::string>& args) {
     if (args.size() == 0) {
-        return "error: missing get_active_servers argument\n";
+        return "error: missing get_max_servers argument\n";
     }
 
     int maxServer = 0;
