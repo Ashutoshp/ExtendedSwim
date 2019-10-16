@@ -94,7 +94,6 @@ void AdaptInterface::handleMessage(cMessage *msg)
 
         // get data from buffer
         string input = string(recvBuffer, numRecvBytes);
-        //cout << "numRecvBytes = " << numRecvBytes << endl;
         numRecvBytes = 0;
 
         /*
