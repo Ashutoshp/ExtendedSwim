@@ -94,6 +94,7 @@ void AdaptInterface::handleMessage(cMessage *msg)
 
         // get data from buffer
         string input = string(recvBuffer, numRecvBytes);
+        numRecvBytes = 0;
 
         /*
 #if DEBUG_ADAPT_INTERFACE
@@ -396,7 +397,7 @@ std::string AdaptInterface::cmdGetActiveServers(const std::vector<std::string>& 
 
 std::string AdaptInterface::cmdGetMaxServers(const std::vector<std::string>& args) {
     if (args.size() == 0) {
-        return "error: missing get_active_servers argument\n";
+        return "error: missing get_max_servers argument\n";
     }
 
     int maxServer = 0;
