@@ -200,7 +200,7 @@ void HPMonitor::handleMessage(cMessage *msg) {
         environment.setArrivalVariance(measuredVariance);
         pModel->setEnvironment(environment);
 
-        cout << "Arrival Mean = " << environment.getArrivalMean() << endl;
+        //cout << "Arrival Mean = " << environment.getArrivalMean() << endl;
 
         if (!halfPeriod) {
             emit(measuredInterarrivalAvg, measuredMeanInterArrival);
@@ -241,7 +241,7 @@ void HPMonitor::handleMessage(cMessage *msg) {
     #endif
             double periodUtility = UtilityScorer::getPeriodUtility(
                     pModel->getConfiguration(), requestUtilityCumulative, pModel->getEvaluationPeriod());
-            cout << "HPMonitor::handleMessage Revenue = " << requestUtilityCumulative << endl;
+            //cout << "HPMonitor::handleMessage Revenue = " << requestUtilityCumulative << endl;
 
             //double periodUtility = UtilityScorer::getPeriodUtility(
             //                    pModel->getConfiguration(), requestUtilityCumulative,

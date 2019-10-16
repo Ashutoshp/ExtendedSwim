@@ -167,7 +167,7 @@ void HPExecutionManagerMod::doAddServerBootComplete(BootComplete* bootComplete) 
     server->gate("out")->connectTo(
             sink->getOrCreateFirstUnconnectedGate("in", 0, false, true));
 
-    std::cout << "HPExecutionManagerMod::doAddServerBootComplete " << std::endl;
+    //std::cout << "HPExecutionManagerMod::doAddServerBootComplete " << std::endl;
 }
 
 // This functions creates a server module with an initial configuration.
@@ -207,7 +207,7 @@ BootComplete* HPExecutionManagerMod::doAddServer(MTServerAdvance::ServerType ser
     module->scheduleStart(simTime());
     module->callInitialize();
 
-    std::cout << "HPExecutionManagerMod::doAddServer " << serverType << std::endl;
+    //std::cout << "HPExecutionManagerMod::doAddServer " << serverType << std::endl;
 
     BootComplete* bootComplete = new BootComplete;
     bootComplete->setModuleId(module->getId());
@@ -244,7 +244,7 @@ BootComplete*  HPExecutionManagerMod::doRemoveServer(MTServerAdvance::ServerType
     }
 
     serverBeingRemovedModuleId = module->getId();
-    std::cout << "HPExecutionManagerMod::doRemoveServer " << serverType << std::endl;
+    //std::cout << "HPExecutionManagerMod::doRemoveServer " << serverType << std::endl;
 
     // check to see if we can delete the server immediately (or if it's busy)
     if (isServerBeingRemoveEmpty()) {
@@ -264,7 +264,7 @@ void HPExecutionManagerMod::doSetBrownout(MTServerAdvance::ServerType serverType
         name << getServerString(serverType);
         name << s;
 
-        std::cout << "HPExecutionManagerMod::doSetBrownout" << serverType << " " << name.str().c_str() << std::endl;
+        //std::cout << "HPExecutionManagerMod::doSetBrownout" << serverType << " " << name.str().c_str() << std::endl;
 
         cModule* module = getParentModule()->getSubmodule(name.str().c_str());
         module->getSubmodule("server")->par("brownoutFactor").setDoubleValue(factor);

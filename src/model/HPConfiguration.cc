@@ -77,7 +77,7 @@ HPConfiguration::~HPConfiguration() {
 }
 
 int HPConfiguration::getBootRemain() const {
-    std::cout << "HPConfiguration::getBootRemain = " << mBootRemain << std::endl;
+    //std::cout << "HPConfiguration::getBootRemain = " << mBootRemain << std::endl;
 
     return mBootRemain;
 }
@@ -147,7 +147,7 @@ int HPConfiguration::getActiveServers(MTServerAdvance::ServerType serverType) co
 }
 
 void HPConfiguration::setActiveServers(int servers, MTServerAdvance::ServerType serverType) {
-    std::cout << "HPConfiguration::setActiveServers = " << serverType << std::endl;
+    //std::cout << "HPConfiguration::setActiveServers = " << serverType << std::endl;
 
     switch (serverType) {
     case MTServerAdvance::ServerType::A:

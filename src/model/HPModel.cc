@@ -167,7 +167,7 @@ const HPModel::ServerInfo* HPModel::getServerInfoObj(MTServerAdvance::ServerType
 
 // apandey boot delay not set
 void HPModel::addServer(double bootDelay, MTServerAdvance::ServerType serverType) {
-    std::cout << "HPModel::addServer " << serverType << std::endl;
+    //std::cout << "HPModel::addServer " << serverType << std::endl;
 
     // only one add server tactic at a time
     //ASSERT(configuration.getBootRemain() == 0);
@@ -175,7 +175,7 @@ void HPModel::addServer(double bootDelay, MTServerAdvance::ServerType serverType
 
     //if (bootDelay > 0) {
     addExpectedChange(simTime().dbl() + bootDelay, getOnlineEventCode(serverType));
-    std::cout << "HPModel::addServer configuration.setBootRemain(ceil(bootDelay / evaluationPeriod), serverType);" << std::endl;
+    //std::cout << "HPModel::addServer configuration.setBootRemain(ceil(bootDelay / evaluationPeriod), serverType);" << std::endl;
     configuration.setBootRemain(ceil(bootDelay / evaluationPeriod), serverType);
     //}
     lastConfigurationUpdate = simTime();
@@ -188,7 +188,7 @@ void HPModel::addServer(double bootDelay, MTServerAdvance::ServerType serverType
 
 // apandey erease online event from events
 void HPModel::serverBecameActive(MTServerAdvance::ServerType serverType) {
-    std::cout << "HPModel::serverBecameActive " << serverType << std::endl;
+    //std::cout << "HPModel::serverBecameActive " << serverType << std::endl;
 
     ServerInfo* serverInfo = const_cast<ServerInfo* >(getServerInfoObj(serverType));
     serverInfo->activeServerCountLast = configuration.getActiveServers(serverType);
@@ -206,12 +206,12 @@ void HPModel::serverBecameActive(MTServerAdvance::ServerType serverType) {
     events.erase(it);
 
     configuration.setActiveServers(serverInfo->activeServerCountLast + 1, serverType);
-    std::cout << "HPModel::serverBecameActive configuration.setBootRemain(0);" << std::endl;
+    //std::cout << "HPModel::serverBecameActive configuration.setBootRemain(0);" << std::endl;
     configuration.setBootRemain(0);
     lastConfigurationUpdate = simTime();
 
     //removeExpiredEvents();
-    std::cout << "serverBecameActive " << serverType << std::endl;
+    //std::cout << "serverBecameActive " << serverType << std::endl;
 #if LOCDEBUG
     std::cout << simTime().dbl() << ": " << "serverBecameActive(): serverCount=" << serverCount << " active=" << activeServerCount << " expected=" << events.size() << std::endl;
 #endif
@@ -220,7 +220,7 @@ void HPModel::serverBecameActive(MTServerAdvance::ServerType serverType) {
 
 // apandey
 void HPModel::removeServer(MTServerAdvance::ServerType serverType) {
-    std::cout << "HPModel::removeServer " << serverType << std::endl;
+    //std::cout << "HPModel::removeServer " << serverType << std::endl;
 
     // Assume only one server is booting at a time.
     if (isServerBooting()) {
@@ -246,7 +246,7 @@ void HPModel::removeServer(MTServerAdvance::ServerType serverType) {
 }
 
 void HPModel::setBrownoutFactor(double factor) {
-    std::cout << "setBrownoutFactor " << factor << std::endl;
+    //std::cout << "setBrownoutFactor " << factor << std::endl;
 
     configuration.setBrownOutFactor(factor);
 }
@@ -532,7 +532,7 @@ const Observations& HPModel::getObservations() const {
 
 void dump_response_time(const Observations& observations) {
     static bool dump = true;
-    std::cout << "HPModel::dump_response_time =" << observations.avgResponseTime << "\n";
+    //std::cout << "HPModel::dump_response_time =" << observations.avgResponseTime << "\n";
 
     if (dump) {
         string file_name = DebugFileInfo::getInstance()->GetResponseTimeFilePath();
